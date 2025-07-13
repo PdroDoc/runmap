@@ -6,50 +6,47 @@ from streamlit_card import card
 from streamlit_lottie import st_lottie
 import json
 
-
 st.set_page_config(page_title="Mapa de Presença", layout="wide")
 
-st.title('Mapa de Presença das Minhas Corridas')
+st.title('Geo-Visualização: Heatmap de 10 meses de gps de minhas corridas!')
 with open("catrun.json") as f:
     lottie_json = json.load(f)
     st_lottie(lottie_json, height=300, key="runcat")
 
 st.markdown("""
 
-Explore uma visualização geográfica interativa de aproximadamente **10 meses** de corridas registradas pelo GPS Garmin. Este projeto reúne dados de localização para mapear trajetos com precisão e oferecer uma experiência imersiva.
+
+##   62.940 LINHAS DE GPS reunidas em um gráfico: Como a Magia Acontece
+
+Eu mergulhei fundo em exatamente **62.940 linhas de dados GPS** brutos, extraídos diretamente dos meus arquivos .FIT do Garmin. Esse não é apenas um mapa qualquer; é um **heatmap 3D dinâmico**, construído com a poderosa combinação de **Streamlit** e **PyDeck**. Pense nisso como uma paisagem urbana de suas corridas:
+
+* **Torres de Atividade**: Cada local por onde você mais correu se eleva em uma "torre" mais alta, revelando os seus pontos de treino favoritos e as áreas de maior intensidade.
+* **Hexagon Layer**: Utilizando a técnica de Hexagon Layer, os dados são agrupados de forma inteligente, criando uma visualização limpa e poderosa que destaca padrões de movimento que você nunca percebeu.
 
 ## Sobre o Projeto
 
 Utilizando todos os arquivos .FIT disponíveis do Garmin, que contêm registros de latitude e longitude, criei um pipeline em Python para processar e consolidar os dados em um único arquivo CSV. A partir disso, desenvolvi uma visualização interativa com **Streamlit** e **PyDeck**, destacando os percursos das corridas em um mapa dinâmico.
 
 ## Como Funciona
+1.  **Coleta de Dados Brutos**: Todos os seus registros de latitude e longitude foram coletados com precisão dos arquivos .FIT do Garmin.
+2.  **Transformação Pythonica**: Um pipeline robusto em Python processa e consolida esses dados massivos em um arquivo CSV otimizado, preparando-os para a visualização.
+3.  **Visualização Dinâmica com Streamlit & PyDeck**: A mágica acontece! Seus dados são projetados em um mapa interativo, onde você pode explorar seus trajetos com fluidez e descobrir a história por trás de cada corrida
 
-1. **Coleta de Dados**: Extração de coordenadas (latitude e longitude) dos arquivos .FIT do Garmin.
-2. **Processamento**: Script em Python para unificar os dados em um arquivo CSV otimizado.
-3. **Visualização**: Geração de um mapa interativo com Streamlit e PyDeck, permitindo explorar os trajetos de forma fluida.
-
-**Divirta-se explorando os caminhos percorridos!**
 
 ---
 """)
 
 with st.sidebar:
-    card(
-        title="Pedro Potz", text="Visite meu site", image="https://taote.vercel.app/meandmiau.jpeg",
-        url="https://pedrop.vercel.app"
-    )
-with sidebar:
-    st.info(
-        "[🇺🇸English Version:]()")
-    st.info(
-        "[💤Acesse também o App de Análise do Sono](https://sleepdataview.streamlit.app/)")
-st.sidebar.title("An app by Pedro Potz.")
+    st.image("https://avatars.githubusercontent.com/u/205710427?v=4", caption="Advogado que programa é unicórnio!",
+             use_container_width=True)  # Sua imagem com uma frase de poder
+    st.markdown("---")
+    st.header("Pedro Potz")
+    st.markdown("Advogado Programador")
+    st.link_button("Conheça meu novo site", "https://pedrop.vercel.app/")
+
+
+st.markdown("---")
 st.sidebar.success("Geo Visualization App")
-
-
-st.sidebar.title("An app by Pedro Potz.")
-st.sidebar.success("Geo Visualization App")
-
 
 # Carregar CSV
 df = pd.read_csv('CSV/todas_corridas.csv')
@@ -58,7 +55,7 @@ df = pd.read_csv('CSV/todas_corridas.csv')
 with st.sidebar:
     paleta = st.selectbox(
         'Escolha opções de cores',
-        ["Aurora Cósmica", "Chama no Escuro", "Cores Atuais"]
+        ["Aurora Cósmica", "Chama no Escuro", "Cores Quentes"]
     )
 
 if paleta == "Aurora Cósmica":
@@ -81,7 +78,7 @@ elif paleta == "Chama no Escuro":
         [227, 26, 28]
     ]
 
-elif paleta == "Cores Atuais":
+elif paleta == "Cores Quentes":
     color_range = [
         [102, 194, 165],
         [252, 141, 98],
@@ -90,7 +87,6 @@ elif paleta == "Cores Atuais":
         [166, 216, 84],
         [255, 217, 47]
     ]
-
 
 material = {
     "ambient": 0.5,
@@ -105,7 +101,6 @@ with st.sidebar:
         'Tipo de Visualização',
         ["Mapa de Presença", "Percursos Compilados"]
     )
-
 
 ### ------------------------- Layer Hexagon ------------------------
 
@@ -124,7 +119,6 @@ hex_layer = pdk.Layer(
     color_range=color_range,
     material=material,
 )
-
 
 ### ------------------------- Layer Path ------------------------
 
@@ -147,7 +141,6 @@ path_layer = pdk.Layer(
     width_min_pixels=2,
     opacity=1
 )
-
 
 ### ------------------------- View ------------------------
 
@@ -172,6 +165,33 @@ elif viz == "Percursos Compilados":
     r = pdk.Deck(
         layers=[path_layer],
         initial_view_state=view_state,
-        map_style="dark"  )
+        map_style="dark")
 
 st.pydeck_chart(r)
+
+with st.expander("Veja os dados brutos"):
+    st.dataframe(df)
+st.markdown("---")
+
+
+st.markdown("### Não perca meus tutoriais e outras ferrramentas gratuitas! ")
+st.link_button("Conheça mais!", "https://pedrop.vercel.app/", help="Aprenda a programar do zero ao avançado!")
+
+st.markdown("---")
+st.markdown("""
+        <div style='text-align: center; color: #666; font-size: 12px;'>
+        App desenvolvido por Pedro Potz<br>
+        Advogado especializado em soluções jurídico-tecnológicas<br>
+        🦄 <em>Advogado que programa é unicórnio!</em>
+        </div>
+        """, unsafe_allow_html=True)
+
+with sidebar:
+    st.markdown("---")
+    st.info(
+        "[💤Análise de dados de Sono](https://sleepdataview.streamlit.app/)")
+    st.info(
+        "[Calculadoras Jurídicas Avançadas:](https://pedrocalc.streamlit.app/)")
+    st.info("[Esqueça o Excel - O Futuro é aqui:](https://pedroduck.streamlit.app)")
+    st.markdown("---")
+    st.markdown(">Be aware- Dont Slip - Pelo Miau")
